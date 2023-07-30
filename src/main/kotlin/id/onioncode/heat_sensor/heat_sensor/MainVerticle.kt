@@ -9,7 +9,7 @@ class MainVerticle : AbstractVerticle() {
   override fun start(startPromise: Promise<Void>) {
     vertx.deployVerticle(
       "id.onioncode.heat_sensor.heat_sensor.HeatSensor",
-      DeploymentOptions().setInstances(10)
+      DeploymentOptions().setInstances(1000)
     )
     vertx.deployVerticle(Listener())
     vertx.deployVerticle(SensorData())
