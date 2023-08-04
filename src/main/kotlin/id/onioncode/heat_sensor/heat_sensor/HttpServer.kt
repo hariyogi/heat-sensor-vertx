@@ -1,19 +1,24 @@
 package id.onioncode.heat_sensor.heat_sensor
 
 import io.vertx.core.AbstractVerticle
+import io.vertx.core.Promise
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.json.JsonObject
 import mu.KotlinLogging
-import java.net.http.HttpRequest
 
 class HttpServer : AbstractVerticle() {
 
   val logger = KotlinLogging.logger {  }
 
-  override fun start() {
+  override fun start(promise: Promise<Void>) {
     vertx.createHttpServer()
       .requestHandler { handler(it) }
-      .listen(8080)
+      .listen(8080) {
+        if (it.succeeded()) {
+          logger.info { "HTTP RUN ON SERVER 8080" }
+          promise.complete()
+        }
+      }
   }
 
   private fun handler(request: HttpServerRequest) {
@@ -27,7 +32,7 @@ class HttpServer : AbstractVerticle() {
   }
 
   private fun sse(request: HttpServerRequest) {
-    val response = request.response();
+    val response = request.response()
     response.apply {
       putHeader("Content-Type", "text/event-stream")
       putHeader("Cache-Control", "no-cache")
